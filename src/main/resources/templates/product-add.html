@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add Product - SellFlow</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="combined-header">
+    <div class="container">
+        <div class="header-content">
+            <h1>SellFlow Marketplace</h1>
+            <nav class="navbar">
+                <a th:href="@{'/products/all'}">Home</a>
+                <a th:href="@{'/products/all'}">Products</a>
+                <a th:href="@{'/products/add'}">Sell Item</a>
+            </nav>
+        </div>
+    </div>
+</header>
+<main class="container">
+    <div class="form-container">
+        <h1>Create New Product Listing</h1>
+
+        <form th:action="@{'/products/add'}" method="post">
+            <div class="form-group">
+                <label for="title">Product Title</label>
+                <input type="text" id="title" name="title" required placeholder="Enter product title">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required placeholder="Describe your product in detail"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price (₸)</label>
+                <input type="number" id="price" name="price" required placeholder="Enter price in tenge">
+            </div>
+
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" required placeholder="Enter your city">
+            </div>
+
+            <div class="form-group">
+                <label for="author">Your Name</label>
+                <input type="text" id="author" name="author" required placeholder="Enter your name">
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="categoryId" required>
+                    <option value="" disabled selected>Select a category</option>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.getId()}"
+                            th:text="${category.getName()}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn submit-btn">Post Product</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

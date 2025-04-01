@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${product.getTitle() + ' - SellFlow'}">Product Info</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="combined-header">
+    <div class="container">
+        <div class="header-content">
+            <h1>SellFlow Marketplace</h1>
+            <nav class="navbar">
+                <a th:href="@{'/products/all'}">Home</a>
+                <a th:href="@{'/products/all'}">Products</a>
+                <a th:href="@{'/products/add'}">Sell Item</a>
+            </nav>
+        </div>
+    </div>
+</header>
+<main class="container">
+    <div class="product-detail">
+        <h2 th:text="${product?.getTitle() ?: 'No title'}">Product Title</h2>
+
+        <img th:src="@{'/images/product-placeholder.jpg'}" alt="Product Image" class="product-image">
+
+        <p class="product-description" th:text="${product?.getDescription() ?: 'No description available'}">
+            Product description goes here.
+        </p>
+
+        <div class="product-price" th:text="${'Price: ₸' + #numbers.formatCurrency(product?.getPrice()) ?: 'Price not set'}">
+            Price
+        </div>
+
+        <div class="product-meta">
+            <div>
+                <span th:text="${'Location: ' + (product?.getCity() ?: 'Not specified')}">Location</span>
+                <span th:text="${' | Category: ' + (category?.getName() ?: 'Uncategorized')}">Category</span>
+            </div>
+            <div th:text="${'Posted by: ' + (product?.getAuthor() ?: 'Unknown')}">
+                Author
+            </div>
+        </div>
+
+        <a th:href="@{'/products/all'}" class="btn" style="margin-top: 20px;">Back to Products</a>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SellFlow - Products</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="combined-header">
+    <div class="container">
+        <div class="header-content">
+            <h1>SellFlow Marketplace</h1>
+            <nav class="navbar">
+                <a th:href="@{'/products/all'}">Home</a>
+                <a th:href="@{'/products/all'}">Products</a>
+                <a th:href="@{'/products/add'}">Sell Item</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="header-row">
+        <h1>Available Products</h1>
+<!--        <a th:href="@{'/products/add'}" class="btn btn-primary">Post New Product</a>-->
+    </div>
+
+
+    <!-- Search and Filter Section -->
+    <div class="search-filter-container">
+        <form th:action="@{/products/all}" method="get" class="search-filter-form">
+            <div class="search-input-group">
+                <input type="text"
+                       name="search"
+                       th:value="${searchTerm}"
+                       placeholder="Search products..."
+                       class="search-input">
+                <button type="submit" class="search-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg>
+                    Search
+                </button>
+            </div>
+
+            <div class="filter-group">
+                <select name="categoryId"
+                        onchange="this.form.submit()"
+                        class="category-select">
+                    <option value="">All Categories</option>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.getId()}"
+                            th:text="${category.getName()}"
+                            th:selected="${category.getId() == selectedCategory}">
+                    </option>
+                </select>
+            </div>
+
+            <a th:href="@{/products/all}"
+               class="reset-button"
+               th:if="${searchTerm != null || selectedCategory != null}">
+                Clear Filters
+            </a>
+        </form>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" th:if="${!products.isEmpty()}">
+        <div class="product-card" th:each="product : ${products}">
+<!--            <img th:src="@{'/images/product-placeholder.jpg'}" alt="Product Image">-->
+            <div class="product-info">
+                <a th:href="@{'/products/' + ${product.getId()}}">
+                    <h3 th:text="${product.getTitle()}">Product Title</h3>
+                </a>
+                <div class="product-price" th:text="${'₸' + #numbers.formatCurrency(product.getPrice())}">Price</div>
+                <div class="product-location" th:text="${product.getCity()}">Location</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div class="no-results" th:if="${products.isEmpty()}">
+        <h3>No products found</h3>
+        <div th:if="${searchTerm != null}">
+            <p>
+                No products match your search for "<span th:text="${searchTerm}"></span>"
+                <span th:if="${selectedCategory != null}">
+                        in <span th:text="${#lists.isEmpty(categories) ? 'selected' : categories.stream().filter(c -> c.getId() == selectedCategory).findFirst().map(c -> c.getName()).orElse('selected')}"></span> category
+                    </span>
+            </p>
+        </div>
+        <div th:if="${searchTerm == null && selectedCategory != null}">
+            <p>
+                No products found in <span th:text="${#lists.isEmpty(categories) ? 'selected' : categories.stream().filter(c -> c.getId() == selectedCategory).findFirst().map(c -> c.getName()).orElse('selected')}"></span> category
+            </p>
+        </div>
+        <div th:if="${searchTerm == null && selectedCategory == null}">
+            <p>No products available at the moment</p>
+        </div>
+        <a th:href="@{/products/all}" class="btn">Browse all products</a>
+    </div>
+</main>
+</body>
+</html>
