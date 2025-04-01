@@ -296,6 +296,12 @@ header h1 {
     color: #475569;
 }
 
+
+
+
+
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .search-filter-form {

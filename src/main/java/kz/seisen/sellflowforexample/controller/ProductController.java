@@ -28,26 +28,41 @@ public class ProductController {
             @RequestParam(required = false) Long categoryId,
             Model model) {
 
-        List<Product> products = productService.getProducts();
+        try {
+            List<Product> products = productService.getProducts();
 
-        if (search != null && !search.isEmpty()) {
-            products = products.stream()
-                    .filter(p -> p.getTitle().toLowerCase().contains(search.toLowerCase()))
-                    .collect(Collectors.toList());
+            // Apply filters safely
+            if (search != null && !search.isEmpty()) {
+                products = products.stream()
+                        .filter(p -> p.getTitle() != null && p.getTitle().toLowerCase().contains(search.toLowerCase()))
+                        .collect(Collectors.toList());
+            }
+
+            if (categoryId != null) {
+                products = products.stream()
+                        .filter(p -> p.getCategoryId() != null && p.getCategoryId().equals(categoryId))
+                        .collect(Collectors.toList());
+            }
+
+            model.addAttribute("products", products);
+            model.addAttribute("categories", categoryService.getCategories());
+            model.addAttribute("selectedCategory", categoryId);
+            model.addAttribute("searchTerm", search);
+
+            // Get category name safely
+            String categoryName = "this category";
+            if (categoryId != null) {
+                Category category = categoryService.getCategoryById(categoryId);
+                categoryName = category != null ? category.getName() : "this category";
+            }
+            model.addAttribute("selectedCategoryName", categoryName);
+
+            return "products";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "An error occurred while filtering products");
+            return "products"; // Return to same page with error message
         }
-
-        if (categoryId != null) {
-            products = products.stream()
-                    .filter(p -> p.getCategoryId().equals(categoryId))
-                    .collect(Collectors.toList());
-        }
-
-        model.addAttribute("products", products);
-        model.addAttribute("categories", categoryService.getCategories());
-        model.addAttribute("selectedCategory", categoryId);
-        model.addAttribute("searchTerm", search);
-
-        return "products";
     }
 
 
